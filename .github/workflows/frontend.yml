@@ -12,8 +12,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Show workspace files (debug)
+        run: |
+          pwd
+          ls
+          ls frontend
 
       - name: Azure Login
         uses: azure/login@v1
@@ -21,11 +27,9 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Upload frontend to Azure Blob Static Website
-        uses: azure/CLI@v1
-        with:
-          inlineScript: |
-            az storage blob upload-batch \
-              --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT }} \
-              --destination '$web' \
-              --source frontend \
-              --overwrite
+        run: |
+          az storage blob upload-batch \
+            --account-name "${{ secrets.AZURE_STORAGE_ACCOUNT }}" \
+            --destination \$web \
+            --source frontend \
+            --overwrite
