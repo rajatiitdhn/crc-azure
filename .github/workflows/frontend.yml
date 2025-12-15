@@ -22,7 +22,7 @@ jobs:
       - name: Upload frontend to Blob Storage
         run: |
           az storage blob upload-batch \
-            --account-name <STORAGE_ACCOUNT_NAME> \
+            --account-name rajatcloudresume \
             --destination '$web' \
             --source frontend \
             --overwrite
