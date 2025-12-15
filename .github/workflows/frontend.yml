@@ -1,4 +1,4 @@
-name: Deploy Frontend to Azure Blob
+name: Deploy Frontend to Azure Blob Storage
 
 on:
   push:
@@ -8,21 +8,24 @@ on:
       - "frontend/**"
 
 jobs:
-  deploy:
+  deploy-frontend:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Upload frontend to Blob Storage
-        run: |
-          az storage blob upload-batch \
-            --account-name rajatcloudresume \
-            --destination '$web' \
-            --source frontend \
-            --overwrite
+      - name: Upload frontend to Azure Blob Storage
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az storage blob upload-batch \
+              --account-name ${{ secrets.STORAGE_ACCOUNT_NAME }} \
+              --destination '$web' \
+              --source frontend \
+              --overwrite
