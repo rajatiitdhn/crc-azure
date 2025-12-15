@@ -1,4 +1,4 @@
-name: Deploy Frontend to Azure Blob Storage
+name: Deploy Frontend to Azure Blob Storage (Debug)
 
 on:
   push:
@@ -15,6 +15,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Debug secrets and files
+        run: |
+          echo "AZURE_STORAGE_ACCOUNT_NAME is set? ->"
+          if [ -z "${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}" ]; then
+            echo "❌ STORAGE ACCOUNT NAME IS EMPTY"
+          else
+            echo "✅ STORAGE ACCOUNT NAME PRESENT"
+          fi
+
+          echo ""
+          echo "Current directory:"
+          pwd
+          echo ""
+
+          echo "Root directory contents:"
+          ls -la
+          echo ""
+
+          echo "Frontend directory contents:"
+          ls -la frontend || echo "❌ frontend directory NOT FOUND"
+
       - name: Azure Login
         uses: azure/login@v1
         with:
@@ -22,6 +43,7 @@ jobs:
 
       - name: Upload frontend to Azure Blob Static Website
         run: |
+          echo "Running az storage blob upload-batch..."
           az storage blob upload-batch \
             --account-name "${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}" \
             --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" \
