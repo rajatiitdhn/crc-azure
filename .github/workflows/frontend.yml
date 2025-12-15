@@ -26,7 +26,7 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            az storage blob upload-batch --overwrite true --account-name rajatcloudresume --destination '$web' -s frontend/
+            az storage blob upload-batch --overwrite true --account-name rajatcloudresume --destination '$web'
       - name: Azure logout
         run: az logout
         if: always()
