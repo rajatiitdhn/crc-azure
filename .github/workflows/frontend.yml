@@ -26,7 +26,7 @@ jobs:
           inlineScript: |
             az storage blob upload-batch \
               --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }} \
-              --destination '$web' \
+              --destination \$web \
               --source frontend \
               --auth-mode key \
               --account-key ${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }} \
