@@ -1,22 +1,28 @@
-name: Deploy Frontend to Azure Blob Static Website
+name: Deploy Frontend to Azure Blob
 
 on:
-  push: 
+  push:
     branches:
       - main
     paths:
       - "frontend/**"
 
 jobs:
-  deploy-frontend:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name:  Upload to Azure Blob Storage
-        uses: azure/CLI@v1
+      - name: Azure Login
+        uses: azure/login@v1
         with:
-          inlineScript: |
-            az storage blob upload-batch --account-name ${{ secrets. AZURE_STORAGE_ACCOUNT_NAME }} --destination '$web' --source frontend --auth-mode key --account-key ${{ secrets. AZURE_STORAGE_ACCOUNT_KEY }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Upload frontend to Blob Storage
+        run: |
+          az storage blob upload-batch \
+            --account-name <STORAGE_ACCOUNT_NAME> \
+            --destination '$web' \
+            --source frontend \
+            --overwrite
