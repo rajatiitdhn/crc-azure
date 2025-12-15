@@ -1,35 +1,32 @@
-name: Deploy Frontend to Azure Blob
+name: deploy_frontend_folder_to_blob
 
 on:
   push:
     branches:
       - main
     paths:
-      - "frontend/**"
+      - 'frontend/**'
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
-  deploy-frontend:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
-      - name: Show workspace files (debug)
-        run: |
-          pwd
-          ls
-          ls frontend
-
-      - name: Azure Login
-        uses: azure/login@v1
+      - uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+          
 
-      - name: Upload frontend to Azure Blob Static Website
-        run: |
-          az storage blob upload-batch \
-            --account-name "${{ secrets.AZURE_STORAGE_ACCOUNT }}" \
-            --destination \$web \
-            --source frontend \
-            --overwrite
+      - name: Upload to blob storage
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az storage blob upload-batch --overwrite true --account-name rajatcloudresume --destination '$web' -s frontend/
+      - name: Azure logout
+        run: az logout
+        if: always()
